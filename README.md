@@ -17,7 +17,7 @@ scripts/install.sh
 ```
 
 ### Usage
-This mod creates folder `~/chunks`
-- When player join to server it also collect StartGamePacket into `~/chunk/.table`, which is necessary to obtain information about the paletted chunks
+This mod creates folder `chunks` in place where game was launched
+- When player join to server it also collect StartGamePacket into `chunk/.table`, which is necessary to obtain information about the paletted chunks
 - When a player gets `FullChunkDataPacket` mod store this into `chunks/<capture_name>/chunkX_chunkZ`, `capture_name = default_world` as default
 - You can change `capture_name` in runtime. Just send to chunk `capture <new_capture_name>` (message will not be sent)
