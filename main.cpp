@@ -94,3 +94,17 @@ TInstanceHook(void *, _ZN19FullChunkDataPacket4readER12BinaryStream, FullChunkDa
 
 	return ret;
 }
+
+struct BlockActorDataPacket : Packet {
+	int x, y, z;
+};
+
+TInstanceHook(void *, _ZN20BlockActorDataPacket4readER12BinaryStream, BlockActorDataPacket, BinaryStream &stream) {
+	auto ret = original(this, stream);
+
+	char filename[256];
+	sprintf(filename, "chunks/%s/.%d_%d_%d", capture.c_str(), x, y, z);
+
+	createFile(filename, stream.buffer);
+	return ret;
+}
