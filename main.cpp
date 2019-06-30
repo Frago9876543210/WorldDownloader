@@ -12,7 +12,7 @@ inline void createSubFolder() {
 	mkdir(folder, 0755);
 }
 
-inline void createFile(char const *filename, std::string buffer) {
+inline void createFile(char const *filename, std::string const &buffer) {
 	std::ofstream output(filename);
 	output << buffer;
 	output.close();
@@ -59,6 +59,19 @@ struct BinaryStream {
 	char filler[sizeof(size_t) * 4];
 	std::string buffer;
 };
+
+struct TransferPacket : Packet {
+	std::string server;
+	unsigned short port;
+};
+
+TInstanceHook(void *, _ZN14TransferPacket4readER12BinaryStream, TransferPacket, BinaryStream &stream) {
+	auto ret = original(this, stream);
+	char filename[256];
+	sprintf(filename, "world_%s_%hu", server.c_str(), port);
+	capture = filename;
+	return ret;
+}
 
 TClasslessInstanceHook(void *, _ZN15StartGamePacket4readER12BinaryStream, BinaryStream &stream) {
 	auto ret = original(this, stream);
