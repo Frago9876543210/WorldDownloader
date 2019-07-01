@@ -71,6 +71,7 @@ TInstanceHook(void *, _ZN14TransferPacket4readER12BinaryStream, TransferPacket, 
 	char filename[256];
 	sprintf(filename, "world_%s_%hu", server.c_str(), port);
 	capture = filename;
+	createSubFolder();
 	return ret;
 }
 
@@ -79,6 +80,7 @@ TClasslessInstanceHook(void *, _ZN21ChangeDimensionPacket4readER12BinaryStream, 
 	char filename[256];
 	sprintf(filename, "world_%d", dimension++);
 	capture = filename;
+	createSubFolder();
 	return ret;
 }
 
