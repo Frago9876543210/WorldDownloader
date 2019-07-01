@@ -3,6 +3,7 @@
 #include <statichook.h>
 
 std::string capture = "default_world";
+int dimension = 0;
 auto textVT = (size_t) dlsym(MinecraftHandle(), "_ZTV10TextPacket") + sizeof(size_t) * 2;
 
 inline void createSubFolder() {
@@ -69,6 +70,14 @@ TInstanceHook(void *, _ZN14TransferPacket4readER12BinaryStream, TransferPacket, 
 	auto ret = original(this, stream);
 	char filename[256];
 	sprintf(filename, "world_%s_%hu", server.c_str(), port);
+	capture = filename;
+	return ret;
+}
+
+TClasslessInstanceHook(void *, _ZN21ChangeDimensionPacket4readER12BinaryStream, BinaryStream &stream) {
+	auto ret = original(this, stream);
+	char filename[256];
+	sprintf(filename, "world_%d", dimension++);
 	capture = filename;
 	return ret;
 }
