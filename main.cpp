@@ -91,6 +91,7 @@ TClasslessInstanceHook(void *, _ZN15StartGamePacket4readER20ReadOnlyBinaryStream
 }
 
 struct LevelChunkPacket : Packet {
+	void *unk;
 	int chunkX, chunkZ;
 };
 
