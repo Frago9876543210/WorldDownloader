@@ -56,9 +56,9 @@ TClasslessInstanceHook(void, _ZN20LoopbackPacketSender4sendER6Packet, Packet &pa
 	original(this, packet);
 }
 
-struct BinaryStream {
-	char filler[sizeof(size_t) * 4];
-	std::string buffer;
+struct ReadOnlyBinaryStream {
+	char filler[12];
+	std::string *buffer;
 };
 
 struct TransferPacket : Packet {
@@ -66,7 +66,7 @@ struct TransferPacket : Packet {
 	unsigned short port;
 };
 
-TInstanceHook(void *, _ZN14TransferPacket4readER12BinaryStream, TransferPacket, BinaryStream &stream) {
+TInstanceHook(void *, _ZN14TransferPacket4readER20ReadOnlyBinaryStream, TransferPacket, ReadOnlyBinaryStream &stream) {
 	auto ret = original(this, stream);
 	char filename[256];
 	sprintf(filename, "world_%s_%hu", server.c_str(), port);
@@ -75,7 +75,7 @@ TInstanceHook(void *, _ZN14TransferPacket4readER12BinaryStream, TransferPacket, 
 	return ret;
 }
 
-TClasslessInstanceHook(void *, _ZN21ChangeDimensionPacket4readER12BinaryStream, BinaryStream &stream) {
+TClasslessInstanceHook(void *, _ZN21ChangeDimensionPacket4readER20ReadOnlyBinaryStream, ReadOnlyBinaryStream &stream) {
 	auto ret = original(this, stream);
 	char filename[256];
 	sprintf(filename, "world_%d", dimension++);
@@ -84,24 +84,24 @@ TClasslessInstanceHook(void *, _ZN21ChangeDimensionPacket4readER12BinaryStream, 
 	return ret;
 }
 
-TClasslessInstanceHook(void *, _ZN15StartGamePacket4readER12BinaryStream, BinaryStream &stream) {
+TClasslessInstanceHook(void *, _ZN15StartGamePacket4readER20ReadOnlyBinaryStream, ReadOnlyBinaryStream &stream) {
 	auto ret = original(this, stream);
-	createFile("chunks/.table", stream.buffer);
+	createFile("chunks/.table", *stream.buffer);
 	return ret;
 }
 
-struct FullChunkDataPacket : Packet {
+struct LevelChunkPacket : Packet {
 	int chunkX, chunkZ;
 };
 
-TInstanceHook(void *, _ZN19FullChunkDataPacket4readER12BinaryStream, FullChunkDataPacket, BinaryStream &stream) {
+TInstanceHook(void *, _ZN16LevelChunkPacket4readER20ReadOnlyBinaryStream, LevelChunkPacket, ReadOnlyBinaryStream &stream) {
 	auto ret = original(this, stream);
 
 	char filename[256];
 	sprintf(filename, "chunks/%s/%d_%d", capture.c_str(), chunkX, chunkZ);
 
 	if (fileNotExist(filename))
-		createFile(filename, stream.buffer);
+		createFile(filename, *stream.buffer);
 
 	return ret;
 }
@@ -110,12 +110,12 @@ struct BlockActorDataPacket : Packet {
 	int x, y, z;
 };
 
-TInstanceHook(void *, _ZN20BlockActorDataPacket4readER12BinaryStream, BlockActorDataPacket, BinaryStream &stream) {
+TInstanceHook(void *, _ZN20BlockActorDataPacket4readER20ReadOnlyBinaryStream, BlockActorDataPacket, ReadOnlyBinaryStream &stream) {
 	auto ret = original(this, stream);
 
 	char filename[256];
 	sprintf(filename, "chunks/%s/.%d_%d_%d", capture.c_str(), x, y, z);
 
-	createFile(filename, stream.buffer);
+	createFile(filename, *stream.buffer);
 	return ret;
 }

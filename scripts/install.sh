@@ -2,7 +2,7 @@
 MCPELAUNCHER=~/.local/share/mcpelauncher
 MODS=$MCPELAUNCHER/mods
 
-VERSION=1.11.4.2
+VERSION=1.12.0.28
 NDK=../android-ndk-r20
 
 mkdir -p build && cd build
