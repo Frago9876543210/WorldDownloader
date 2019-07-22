@@ -115,7 +115,7 @@ TInstanceHook(void *, _ZN20BlockActorDataPacket4readER20ReadOnlyBinaryStream, Bl
 	auto ret = original(this, stream);
 
 	char filename[256];
-	sprintf(filename, "chunks/%s/.%d_%d_%d", capture.c_str(), x, y, z);
+	sprintf(filename, "chunks/%s/.%d_%d_%d_%d_%d", capture.c_str(), x >> 4, z >> 4, x, y, z);
 
 	createFile(filename, *stream.buffer);
 	return ret;
